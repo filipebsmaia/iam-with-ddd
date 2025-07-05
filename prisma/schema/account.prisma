@@ -1,0 +1,93 @@
+model Account {
+  id                 String               @id @db.Uuid
+  email              String               @db.VarChar(100)
+  type               AccountType
+  staff              Staff?
+  customer           Customer?
+  credential         Credential?
+  roles              Role[]
+  permissionsOnRoles PermissionsOnRoles[]
+
+  @@unique([email, type])
+  @@map("accounts")
+}
+
+enum AccountType {
+  STAFF
+  CUSTOMER
+}
+
+model Credential {
+  id             String  @id @db.Uuid
+  hashedPassword String  @map("hashed_password") @db.VarChar(255)
+  account        Account @relation(fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  accountId      String  @unique @map("account_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("credentials")
+}
+
+model Staff {
+  id        String  @id @db.Uuid
+  name      String  @db.VarChar(100)
+  account   Account @relation(fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  accountId String  @unique @map("account_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("staffs")
+}
+
+model Customer {
+  id        String  @id @db.Uuid
+  name      String  @db.VarChar(100)
+  account   Account @relation(fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  accountId String  @unique @map("account_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("customers")
+}
+
+model Permission {
+  id    String               @id @db.Uuid
+  value String               @unique @db.VarChar(255)
+  roles PermissionsOnRoles[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("permissions")
+}
+
+model Role {
+  id                 String               @id @db.Uuid
+  name               String               @unique @db.VarChar(255)
+  permissionsOnRoles PermissionsOnRoles[]
+  accounts           Account[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+model PermissionsOnRoles {
+  role         Role       @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  roleId       String     @map("role_id") @db.Uuid
+  permission   Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  permissionId String     @map("permission_id") @db.Uuid
+  assignedBy   Account    @relation(fields: [assignedById], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  assignedById String     @map("assigned_by_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@id([roleId, permissionId])
+  @@index([roleId])
+  @@map("permissions_on_roles")
+}
