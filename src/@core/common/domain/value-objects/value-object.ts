@@ -2,7 +2,6 @@ import { isDeepStrictEqual } from 'util';
 
 export type UnwrapValueObject<T> = T extends ValueObject<infer V> ? V : T;
 
-// Aplica unwrapping recursivamente em todas as props não-método
 export type UnwrappedValueObjectProps<T> = {
   [K in keyof PropertiesOnly<T>]: UnwrapValueObject<T[K]>;
 };

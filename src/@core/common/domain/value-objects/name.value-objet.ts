@@ -7,6 +7,10 @@ export class Name extends ValueObject<string> {
     this.validate();
   }
 
+  public static from(value: string) {
+    return new Name(value);
+  }
+
   private validate() {
     const parts = this.value
       .trim()

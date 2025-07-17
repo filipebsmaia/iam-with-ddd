@@ -7,6 +7,10 @@ export class Email extends ValueObject<string> {
     this.validate();
   }
 
+  public static from(value: string) {
+    return new Email(value);
+  }
+
   private validate() {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 

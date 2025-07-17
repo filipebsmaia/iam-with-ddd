@@ -23,12 +23,12 @@ const serviceEnv = process.env.NODE_ENV;
 const otlpBaseUrl = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
 
 if (!serviceEnv) {
-  console.error("Missing flag 'serviceEnv' to initialize telemetry service");
+  console.error("Missing env 'NODE_ENV' to initialize telemetry service");
   process.exit(1);
 }
 
 if (!otlpBaseUrl) {
-  console.error("Missing flag 'otlpBaseUrl' to initialize telemetry service");
+  console.error("Missing env 'OTEL_EXPORTER_OTLP_ENDPOINT' to initialize telemetry service");
   process.exit(1);
 }
 

@@ -1,7 +1,7 @@
 import { PrismaManager } from '@/infra/common/database/prisma-manager';
 import { UnitOfWork } from '@core/common/application/unit-of-work';
 import { RoleRepository } from '@core/iam/domain/repositories/role.repository';
-import { Role } from '@core/iam/domain/entities/role.entity';
+import { Role, RoleId } from '@core/iam/domain/entities/role.entity';
 import { RolePrismaMapper } from '../mappers/role-prisma.mapper';
 
 export class PrismaRoleRepository extends RoleRepository {
@@ -19,7 +19,7 @@ export class PrismaRoleRepository extends RoleRepository {
   async create(entity: Role): Promise<void> {
     const role = RolePrismaMapper.toPersistence(entity);
 
-    await this.uow.runTransaction(async () => {
+    await this.uow.runTransaction({}, async () => {
       await this.repository.role.create({
         data: {
           ...role,
@@ -31,7 +31,7 @@ export class PrismaRoleRepository extends RoleRepository {
   async save(entity: Role): Promise<void> {
     const role = RolePrismaMapper.toPersistence(entity);
 
-    await this.uow.runTransaction(async () => {
+    await this.uow.runTransaction({}, async () => {
       await this.repository.role.update({
         where: {
           id: role.id,
@@ -41,5 +41,24 @@ export class PrismaRoleRepository extends RoleRepository {
         },
       });
     });
+  }
+
+  async findById(id: RoleId): Promise<Role | undefined> {
+    const role = await this.repository.role.findUnique({
+      where: {
+        id: id.value,
+      },
+      include: {
+        permissionsOnRoles: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    if (role) {
+      return RolePrismaMapper.toDomain(role);
+    }
   }
 }

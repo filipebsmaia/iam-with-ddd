@@ -40,7 +40,7 @@ export class CreateCustomerUseCase extends UseCase<CreateCustomerUseCaseProps, C
 
     this.logger.info('Creating customer', customer);
 
-    await this.uow.runTransaction(async () => {
+    await this.uow.runTransaction({}, async () => {
       await this.customerRepository.create(customer);
       await this.iamProvider.setPassword({
         accountId: customer.accountId.value,

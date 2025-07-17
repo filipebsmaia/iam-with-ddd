@@ -20,10 +20,12 @@ import { AccountController } from './account.controller';
 import { GetAccountUseCase } from '@core/iam/application/use-cases/get-account';
 import { CanGetAccountSpecification } from '@core/iam/domain/specifications/can-get-account.specification';
 import { SpecificationsModule } from '../specifications.module';
+import { AccountRoleController } from './account-role.controller';
+import { GetAccountRolesUseCase } from '@core/iam/application/use-cases/get-account-roles';
 
 @Module({
   imports: [SignableTokenModule, SpecificationsModule],
-  controllers: [LoginController, RefreshTokenController, AccountController],
+  controllers: [LoginController, RefreshTokenController, AccountController, AccountRoleController],
   providers: [
     {
       provide: AccountRepository,
@@ -56,6 +58,18 @@ import { SpecificationsModule } from '../specifications.module';
         return app.wrap(new GetAccountUseCase(accountRepository, canGetAccountSpecification));
       },
       inject: [ApplicationService, AccountRepository, CanGetAccountSpecification],
+    },
+    {
+      provide: GetAccountRolesUseCase,
+      useFactory: (
+        app: ApplicationService,
+        roleRepository: RoleRepository,
+        accountRepository: AccountRepository,
+        canGetAccountSpecification: CanGetAccountSpecification,
+      ) => {
+        return app.wrap(new GetAccountRolesUseCase(accountRepository, roleRepository, canGetAccountSpecification));
+      },
+      inject: [ApplicationService, RoleRepository, AccountRepository, CanGetAccountSpecification],
     },
     {
       provide: SetAccountPasswordUseCase,

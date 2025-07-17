@@ -2,9 +2,9 @@ import { UnwrappedValueObjectProps } from '@core/common/domain/value-objects/val
 import { Account } from '@core/iam/domain/entities/account.entity';
 
 type SimplifiedAccount = Omit<Account, 'events' | 'hashedPassword' | 'credential'>;
-
+export type AccountToPresent = UnwrappedValueObjectProps<SimplifiedAccount>;
 export class AccountPresenter {
-  static present({ id, type, roles }: SimplifiedAccount): UnwrappedValueObjectProps<SimplifiedAccount> {
+  static present({ id, type, roles }: SimplifiedAccount): AccountToPresent {
     return {
       id: id.value,
       type,
