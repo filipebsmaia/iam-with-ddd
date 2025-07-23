@@ -1,5 +1,5 @@
 import { Staff } from '@core/account/domain/entities/staff.entity';
-import { IAMProvider } from '@core/account/domain/providers/iam.provider';
+import { IAMProvider } from '@core/common/domain/providers/iam.provider';
 import { Specification } from '@core/common/domain/specification';
 
 export class CanCreateStaffSpecification extends Specification<Staff> {
@@ -8,9 +8,9 @@ export class CanCreateStaffSpecification extends Specification<Staff> {
   }
 
   async isSatisfiedBy(staff: Staff) {
-    const hasPermission = await this.iamProvider.hasPermission({
+    const hasPermission = await this.iamProvider.hasPermissions({
       accountId: staff.accountId.value,
-      permission: 'staff.create',
+      permissions: ['staff.create'],
     });
 
     if (hasPermission) {

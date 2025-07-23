@@ -5,7 +5,7 @@ model Account {
   staff              Staff?
   customer           Customer?
   credential         Credential?
-  roles              Role[]
+  roles              Role[]               @relation("accounts_to_roles")
   permissionsOnRoles PermissionsOnRoles[]
 
   @@unique([email, type])
@@ -68,7 +68,7 @@ model Role {
   id                 String               @id @db.Uuid
   name               String               @unique @db.VarChar(255)
   permissionsOnRoles PermissionsOnRoles[]
-  accounts           Account[]
+  accounts           Account[]            @relation("accounts_to_roles")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -89,5 +89,6 @@ model PermissionsOnRoles {
 
   @@id([roleId, permissionId])
   @@index([roleId])
+  @@index([permissionId])
   @@map("permissions_on_roles")
 }

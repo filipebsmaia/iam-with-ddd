@@ -77,11 +77,11 @@ CREATE TABLE "permissions_on_roles" (
 );
 
 -- CreateTable
-CREATE TABLE "_AccountToRole" (
+CREATE TABLE "_accounts_to_roles" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL,
 
-    CONSTRAINT "_AccountToRole_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "_accounts_to_roles_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -106,7 +106,10 @@ CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
 CREATE INDEX "permissions_on_roles_role_id_idx" ON "permissions_on_roles"("role_id");
 
 -- CreateIndex
-CREATE INDEX "_AccountToRole_B_index" ON "_AccountToRole"("B");
+CREATE INDEX "permissions_on_roles_permission_id_idx" ON "permissions_on_roles"("permission_id");
+
+-- CreateIndex
+CREATE INDEX "_accounts_to_roles_B_index" ON "_accounts_to_roles"("B");
 
 -- AddForeignKey
 ALTER TABLE "credentials" ADD CONSTRAINT "credentials_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -127,9 +130,9 @@ ALTER TABLE "permissions_on_roles" ADD CONSTRAINT "permissions_on_roles_permissi
 ALTER TABLE "permissions_on_roles" ADD CONSTRAINT "permissions_on_roles_assigned_by_id_fkey" FOREIGN KEY ("assigned_by_id") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_AccountToRole" ADD CONSTRAINT "_AccountToRole_A_fkey" FOREIGN KEY ("A") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_accounts_to_roles" ADD CONSTRAINT "_accounts_to_roles_A_fkey" FOREIGN KEY ("A") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_AccountToRole" ADD CONSTRAINT "_AccountToRole_B_fkey" FOREIGN KEY ("B") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_accounts_to_roles" ADD CONSTRAINT "_accounts_to_roles_B_fkey" FOREIGN KEY ("B") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 COMMIT;

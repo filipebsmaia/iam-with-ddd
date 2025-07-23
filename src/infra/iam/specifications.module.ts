@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CanGetAccountSpecification } from '@core/iam/domain/specifications/can-get-account.specification';
+import { IAMProvider } from '@core/common/domain/providers/iam.provider';
 
 @Module({
   imports: [],
@@ -7,10 +8,10 @@ import { CanGetAccountSpecification } from '@core/iam/domain/specifications/can-
   providers: [
     {
       provide: CanGetAccountSpecification,
-      useFactory: () => {
-        return new CanGetAccountSpecification();
+      useFactory: (iamProvider: IAMProvider) => {
+        return new CanGetAccountSpecification(iamProvider);
       },
-      inject: [],
+      inject: [IAMProvider],
     },
   ],
   exports: [CanGetAccountSpecification],

@@ -22,6 +22,8 @@ import { CanGetAccountSpecification } from '@core/iam/domain/specifications/can-
 import { SpecificationsModule } from '../specifications.module';
 import { AccountRoleController } from './account-role.controller';
 import { GetAccountRolesUseCase } from '@core/iam/application/use-cases/get-account-roles';
+import { AccountQuery } from '@core/iam/application/query/account.query';
+import { PrismaAccountQuery } from '@core/iam/infra/db/query/account-prisma.query';
 
 @Module({
   imports: [SignableTokenModule, SpecificationsModule],
@@ -40,6 +42,13 @@ import { GetAccountRolesUseCase } from '@core/iam/application/use-cases/get-acco
         return new PrismaRoleRepository(prismaManager, uow);
       },
       inject: [PrismaManager, UnitOfWork],
+    },
+    {
+      provide: AccountQuery,
+      useFactory: (prismaManager: PrismaManager) => {
+        return new PrismaAccountQuery(prismaManager);
+      },
+      inject: [PrismaManager],
     },
     {
       provide: EncrypterProvider,
@@ -116,6 +125,6 @@ import { GetAccountRolesUseCase } from '@core/iam/application/use-cases/get-acco
       inject: [ApplicationService, SignableAccessTokenProvider, SignableRefreshTokenProvider],
     },
   ],
-  exports: [SetAccountPasswordUseCase],
+  exports: [SetAccountPasswordUseCase, AccountQuery],
 })
 export class AccountModule {}

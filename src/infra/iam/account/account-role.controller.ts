@@ -17,7 +17,7 @@ export class AccountRoleController {
   @IsAuthenticated({})
   @ABAC(['account.get'])
   @Get('/roles')
-  async authenticateCustomer(@Req() { user }: Request, @Param() { accountId }: GetAccountParamsDTO) {
+  async getAccountRoles(@Req() { user }: Request, @Param() { accountId }: GetAccountParamsDTO) {
     const roles = await this.getAccountRolesUseCase.execute({
       accountId,
       executorId: user!.accountId!,

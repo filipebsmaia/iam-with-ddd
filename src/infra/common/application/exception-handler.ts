@@ -1,3 +1,4 @@
+import { Logger } from '@core/common/application/logger';
 import { ValidationError } from '@core/common/errors/validation.error';
 import { Exception } from '@core/common/exception/exception';
 import { InternalServerException } from '@core/common/exception/internal-server.expection';
@@ -7,11 +8,12 @@ import type { Response } from 'express';
 
 @Catch()
 export class ExceptionHandler implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  private logger = new Logger();
+  catch(exception: HttpException | Exception, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    console.error(exception);
+    this.logger.error(exception.stack ?? `An error ocurred: ${exception.name}(${exception.message})`, exception);
 
     if (exception instanceof HttpException) {
       const {} = response;

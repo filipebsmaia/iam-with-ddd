@@ -1,6 +1,6 @@
 import { UseCase } from '@core/common/domain/use-case';
 import { Customer } from '@core/account/domain/entities/customer.entity';
-import { IAMProvider } from '@core/account/domain/providers/iam.provider';
+import { IAMProvider } from '@core/common/domain/providers/iam.provider';
 import { UnitOfWork } from '@core/common/application/unit-of-work';
 import { CustomerRepository } from '@core/account/domain/repositories/customer.repository';
 import Email from '@core/common/domain/value-objects/email.value-objet';
