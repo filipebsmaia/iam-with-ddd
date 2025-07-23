@@ -1,16 +1,16 @@
-import { UseCase } from '@core/common/domain/use-case';
+import { Command } from '@core/common/domain/command';
 import { AccountId } from '@core/iam/domain/entities/account.entity';
 import HashedPassword from '@core/iam/domain/entities/value-objects/hashed-password.value-objet';
 import { AccountNotFoundError } from '@core/iam/domain/errors/account-not-found.error';
 import { EncrypterProvider } from '@core/iam/domain/providers/encrypter.provider';
 import { AccountRepository } from '@core/iam/domain/repositories/account.repository';
 
-interface SetAccountPasswordUseCaseProps {
+interface SetAccountPasswordCommandProps {
   accountId: string;
   password: string;
 }
 
-export class SetAccountPasswordUseCase extends UseCase<SetAccountPasswordUseCaseProps, void> {
+export class SetAccountPasswordCommand extends Command<SetAccountPasswordCommandProps> {
   constructor(
     readonly accountRepository: AccountRepository,
     readonly encrypterProvider: EncrypterProvider,
@@ -18,8 +18,9 @@ export class SetAccountPasswordUseCase extends UseCase<SetAccountPasswordUseCase
     super();
   }
 
-  async execute({ accountId, password }: SetAccountPasswordUseCaseProps) {
-    const account = await this.accountRepository.findById(new AccountId(accountId));
+  async execute({ accountId, password }: SetAccountPasswordCommandProps) {
+    const targetAccountId = AccountId.from(accountId);
+    const account = await this.accountRepository.findById(targetAccountId);
 
     if (!account) {
       throw new AccountNotFoundError();

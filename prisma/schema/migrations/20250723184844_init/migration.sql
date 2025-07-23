@@ -1,5 +1,3 @@
-BEGIN;
-
 -- CreateEnum
 CREATE TYPE "AccountType" AS ENUM ('STAFF', 'CUSTOMER');
 
@@ -8,6 +6,8 @@ CREATE TABLE "accounts" (
     "id" UUID NOT NULL,
     "email" VARCHAR(100) NOT NULL,
     "type" "AccountType" NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
 );
@@ -134,5 +134,3 @@ ALTER TABLE "_accounts_to_roles" ADD CONSTRAINT "_accounts_to_roles_A_fkey" FORE
 
 -- AddForeignKey
 ALTER TABLE "_accounts_to_roles" ADD CONSTRAINT "_accounts_to_roles_B_fkey" FOREIGN KEY ("B") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-COMMIT;

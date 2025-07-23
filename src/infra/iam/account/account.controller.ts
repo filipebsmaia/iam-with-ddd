@@ -1,28 +1,31 @@
 import { Controller, Param, Post, Req, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
-import { GetAccountUseCase } from '@core/iam/application/use-cases/get-account';
 import { GetAccountParamsDTO } from './dtos/get-account.dto ';
 import { IsAuthenticated } from '@/infra/common/application/guards/is-autneticated.decorator';
 import { ABAC } from '@/infra/common/application/guards/abac.decorator';
-import { AccountPresenter } from './presenters/account.presenter';
+import { GetAccountQuery } from '@core/iam/application/queries/get-account.query';
+import { AccountDTO } from '@core/iam/application/dtos/account.dto';
 
 @UsePipes(new ValidationPipe())
 @ApiTags('accounts')
 @Controller('v1/accounts')
 export class AccountController {
-  constructor(readonly getAccountUseCase: GetAccountUseCase) {}
+  constructor(readonly getAccountQuery: GetAccountQuery) {}
 
   @ApiOperation({ summary: 'Get a account' })
   @IsAuthenticated({})
+  @ApiResponse({
+    type: () => AccountDTO,
+  })
   @ABAC(['account.get'])
   @Post('/:accountId')
-  async authenticateCustomer(@Req() { user }: Request, @Param() { accountId }: GetAccountParamsDTO) {
-    const account = await this.getAccountUseCase.execute({
+  async authenticateCustomer(@Req() { user }: Request, @Param() { accountId }: GetAccountParamsDTO): Promise<AccountDTO> {
+    const account = await this.getAccountQuery.execute({
       accountId,
-      executorId: user!.accountId!,
+      executorId: user!.accountId,
     });
 
-    return AccountPresenter.present(account);
+    return account;
   }
 }

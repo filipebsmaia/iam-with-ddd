@@ -6,8 +6,8 @@ import { EventsModule } from './events.module';
 import { AccountModule } from '../iam/account/account.module';
 import { IAMProvider } from '@core/common/domain/providers/iam.provider';
 import { DomainIAMProvider } from '@core/common/infra/providers/domain-iam.provider';
-import { SetAccountPasswordUseCase } from '@core/iam/application/use-cases/set-account-password.use-case';
-import { AccountQuery } from '@core/iam/application/query/account.query';
+import { SetAccountPasswordCommand } from '@core/iam/application/commands/set-account-password.command';
+import { AccountQueryService } from '@core/iam/application/services/account-query.service';
 
 @Global()
 @Module({
@@ -16,10 +16,10 @@ import { AccountQuery } from '@core/iam/application/query/account.query';
   providers: [
     {
       provide: IAMProvider,
-      useFactory: (setAccountPasswordUseCase: SetAccountPasswordUseCase, accountQuery: AccountQuery) => {
-        return new DomainIAMProvider(setAccountPasswordUseCase, accountQuery);
+      useFactory: (setAccountPasswordCommand: SetAccountPasswordCommand, accountQueryService: AccountQueryService) => {
+        return new DomainIAMProvider(setAccountPasswordCommand, accountQueryService);
       },
-      inject: [SetAccountPasswordUseCase, AccountQuery],
+      inject: [SetAccountPasswordCommand, AccountQueryService],
     },
   ],
   exports: [IAMProvider],

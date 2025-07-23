@@ -8,6 +8,9 @@ model Account {
   roles              Role[]               @relation("accounts_to_roles")
   permissionsOnRoles PermissionsOnRoles[]
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   @@unique([email, type])
   @@map("accounts")
 }

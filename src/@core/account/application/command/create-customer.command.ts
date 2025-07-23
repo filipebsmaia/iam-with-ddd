@@ -1,4 +1,4 @@
-import { UseCase } from '@core/common/domain/use-case';
+import { Command } from '@core/common/domain/command';
 import { Customer } from '@core/account/domain/entities/customer.entity';
 import { IAMProvider } from '@core/common/domain/providers/iam.provider';
 import { UnitOfWork } from '@core/common/application/unit-of-work';
@@ -6,13 +6,13 @@ import { CustomerRepository } from '@core/account/domain/repositories/customer.r
 import Email from '@core/common/domain/value-objects/email.value-objet';
 import { CustomerAlreadyExistsError } from '@core/account/domain/errors/customer-already-exists.error';
 
-interface CreateCustomerUseCaseProps {
+interface CreateCustomerCommandProps {
   name: string;
   email: string;
   password: string;
 }
 
-export class CreateCustomerUseCase extends UseCase<CreateCustomerUseCaseProps, Customer> {
+export class CreateCustomerCommand extends Command<CreateCustomerCommandProps> {
   constructor(
     readonly customerRepository: CustomerRepository,
     readonly iamProvider: IAMProvider,
@@ -21,7 +21,7 @@ export class CreateCustomerUseCase extends UseCase<CreateCustomerUseCaseProps, C
     super();
   }
 
-  async execute({ name, email, password }: CreateCustomerUseCaseProps) {
+  async execute({ name, email, password }: CreateCustomerCommandProps) {
     this.logger.info('Trying to create a new customer', { name, email });
 
     const customerAlreadyExists = await this.customerRepository.findFirstBy({
@@ -48,7 +48,5 @@ export class CreateCustomerUseCase extends UseCase<CreateCustomerUseCaseProps, C
       });
     });
     this.logger.info('Customer created', customer);
-
-    return customer;
   }
 }

@@ -1,4 +1,4 @@
-import { UseCase } from '@core/common/domain/use-case';
+import { Command } from '@core/common/domain/command';
 import { CanCreateStaffSpecification } from '@core/account/domain/specifications/can-create-staff.specification';
 import { Staff, StaffId } from '@core/account/domain/entities/staff.entity';
 import { PermissionDeniedError } from '@core/common/errors/permission-denied.error';
@@ -6,13 +6,13 @@ import { StaffRepository } from '@core/account/domain/repositories/staff.reposit
 import Email from '@core/common/domain/value-objects/email.value-objet';
 import { StaffAlreadyExistsError } from '@core/account/domain/errors/staff-already-exists.error';
 
-interface CreateStaffUseCaseProps {
+interface CreateStaffCommandProps {
   executorId: string;
   name: string;
   email: string;
 }
 
-export class CreateStaffUseCase extends UseCase<CreateStaffUseCaseProps, void> {
+export class CreateStaffCommand extends Command<CreateStaffCommandProps> {
   constructor(
     readonly staffRepository: StaffRepository,
     readonly canCreateStaffSpecification: CanCreateStaffSpecification,
@@ -20,7 +20,7 @@ export class CreateStaffUseCase extends UseCase<CreateStaffUseCaseProps, void> {
     super();
   }
 
-  async execute({ executorId, name, email }: CreateStaffUseCaseProps) {
+  async execute({ executorId, name, email }: CreateStaffCommandProps) {
     const executor = await this.staffRepository.findById(new StaffId(executorId));
 
     if (!executor) {

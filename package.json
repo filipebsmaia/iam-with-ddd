@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "node -r ts-node/register -r tsconfig-paths/register --env-file=.env ./src/main.ts",
+    "build": "nest build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
